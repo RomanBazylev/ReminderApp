@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Напоминалка — Поздравления</title>
+<style>
+/* ═══════════ VARIABLES ═══════════ */
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent: #818cf8;
+  --accent-light: #a5b4fc;
+  --accent-bg: #1e1b4b;
+  --border: #475569;
+  --shadow: 0 2px 8px rgba(0,0,0,.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.4);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --green: #4ade80;
+  --green-bg: #052e16;
+  --red: #f87171;
+  --red-bg: #450a0a;
+  --yellow: #fbbf24;
+  --yellow-bg: #422006;
+  --header-h: 56px;
+}
+[data-theme="light"] {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #e2e8f0;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-bg: #e0e7ff;
+  --border: #cbd5e1;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+  --green: #16a34a;
+  --green-bg: #dcfce7;
+  --red: #dc2626;
+  --red-bg: #fee2e2;
+  --yellow: #d97706;
+  --yellow-bg: #fef3c7;
+}
+
+/* ═══════════ RESET & BASE ═══════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+a{color:var(--accent);text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,select,textarea{font-family:inherit;font-size:.95rem;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;background:var(--surface);color:var(--text);outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px}
+
+/* ═══════════ HEADER ═══════════ */
+.header{position:sticky;top:0;z-index:100;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-left .logo{font-size:1.5rem}
+.header-left h1{font-size:1.1rem;font-weight:700}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--text);font-size:1.15rem;transition:background .2s}
+.icon-btn:hover{background:var(--accent-bg);color:var(--accent)}
+
+/* ═══════════ NAV ═══════════ */
+.nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-tab{flex:1;min-width:0;padding:12px 6px;text-align:center;font-size:.72rem;font-weight:600;color:var(--text-secondary);border-bottom:3px solid transparent;transition:color .2s,border .2s;white-space:nowrap;cursor:pointer;background:none}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-tab .tab-icon{display:block;font-size:1.15rem;margin-bottom:2px}
+
+/* ═══════════ LAYOUT ═══════════ */
+.main{max-width:800px;margin:0 auto;padding:16px}
+.view{display:none}
+.view.active{display:block}
+.section-title{font-size:1.1rem;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.section-title:first-child{margin-top:0}
+
+/* ═══════════ CARDS ═══════════ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);transition:transform .15s}
+.card:hover{transform:translateY(-1px)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.card-title{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.card-subtitle{font-size:.85rem;color:var(--text-secondary)}
+.card-actions{display:flex;gap:6px}
+.card-actions button{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--text-secondary);font-size:.9rem;transition:background .2s,color .2s}
+.card-actions button:hover{background:var(--accent-bg);color:var(--accent)}
+
+/* ═══════════ CHIPS ═══════════ */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:600;background:var(--accent-bg);color:var(--accent)}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+
+/* ═══════════ BADGES ═══════════ */
+.event-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600}
+.event-badge.birthday{background:var(--accent-bg);color:var(--accent)}
+.event-badge.holiday{background:var(--green-bg);color:var(--green)}
+.event-badge.professional{background:var(--yellow-bg);color:var(--yellow)}
+
+/* ═══════════ DASHBOARD ═══════════ */
+.today-banner{background:linear-gradient(135deg,var(--accent-bg),var(--surface));border:1px solid var(--accent);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:16px}
+.today-banner .big-emoji{font-size:3rem;display:block;margin-bottom:8px}
+.today-banner h2{font-size:1.2rem;margin-bottom:4px}
+.today-banner p{color:var(--text-secondary);font-size:.9rem}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-secondary)}
+.empty-state .big-emoji{font-size:3rem;display:block;margin-bottom:12px}
+.greet-person{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:var(--radius-sm);margin-bottom:8px;background:var(--surface2);gap:8px}
+.greet-person .person-info{display:flex;align-items:center;gap:10px;min-width:0}
+.greet-person .avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--accent);font-weight:700;flex-shrink:0}
+.greet-person .person-name{font-weight:600}
+.greet-person .person-detail{font-size:.8rem;color:var(--text-secondary)}
+.btn-greet{padding:8px 16px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-weight:600;font-size:.85rem;transition:opacity .2s;flex-shrink:0}
+.btn-greet:hover{opacity:.85}
+.btn-greet.sent{background:var(--green-bg);color:var(--green);pointer-events:none}
+.mode-badge{font-size:.65rem;padding:2px 6px;border-radius:10px;margin-left:6px;font-weight:700}
+.mode-badge.auto{background:var(--green-bg);color:var(--green)}
+.upcoming-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:6px;background:var(--surface)}
+.upcoming-item .date-badge{min-width:54px;text-align:center;font-weight:700;font-size:.85rem;color:var(--accent)}
+.upcoming-item .event-text{font-size:.9rem}
+
+/* ═══════════ BUTTONS ═══════════ */
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-weight:600;font-size:.9rem;transition:opacity .2s,background .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.85}
+.btn-secondary{background:var(--surface2);color:var(--text)}
+.btn-secondary:hover{background:var(--border)}
+.btn-danger{background:var(--red-bg);color:var(--red)}
+.btn-danger:hover{opacity:.85}
+.btn-sm{padding:6px 14px;font-size:.8rem}
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+
+/* ═══════════ SHARE BUTTONS ═══════════ */
+.share-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+.share-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:var(--radius-sm);font-weight:600;font-size:.85rem;color:#fff;transition:opacity .2s}
+.share-btn:hover{opacity:.85}
+.share-btn.whatsapp{background:#25D366}
+.share-btn.telegram{background:#0088cc}
+.share-btn.email{background:#EA4335}
+.share-btn.sms{background:#6366f1}
+.share-btn.copy{background:var(--surface2);color:var(--text)}
+.share-btn.vk{background:#4C75A3}
+.share-btn.viber{background:#7360f2}
+.share-btn.ok{background:#ee8208}
+.share-btn.fb{background:#1877f2}
+.share-btn.discord{background:#5865F2}
+.share-btn.tg-bot{background:#229ED9;border:2px solid var(--green)}
+.share-btn.insta{background:#E4405F}
+
+/* ═══════════ MODAL ═══════════ */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);padding:24px}
+.modal-title{font-size:1.15rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal .form-group{margin-bottom:14px}
+.modal .form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:var(--text-secondary)}
+.modal .form-group input,.modal .form-group select,.modal .form-group textarea{width:100%}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.checkbox-label{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--radius-sm);background:var(--surface2);cursor:pointer;font-size:.85rem;transition:background .2s}
+.checkbox-label:has(input:checked){background:var(--accent-bg);color:var(--accent)}
+.checkbox-label input{display:none}
+
+/* ═══════════ FILTER BAR ═══════════ */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input[type="search"]{flex:1;min-width:180px}
+.filter-chip{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;background:var(--surface2);color:var(--text-secondary);cursor:pointer;border:1px solid transparent;transition:all .2s}
+.filter-chip:hover,.filter-chip.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+
+/* ═══════════ CATEGORY DOT ═══════════ */
+.cat-dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+/* ═══════════ GREETING MODAL ═══════════ */
+.greeting-preview{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:12px 0;font-size:.95rem;line-height:1.6;white-space:pre-wrap;min-height:80px}
+.template-controls{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.template-controls select{flex:1}
+
+/* ═══════════ SETTINGS ═══════════ */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);gap:12px}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-weight:600;font-size:.9rem}
+.setting-desc{font-size:.8rem;color:var(--text-secondary);margin-top:2px}
+.toggle{width:48px;height:26px;border-radius:13px;background:var(--surface2);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on::after{transform:translateX(22px)}
+
+/* ═══════════ LOG ═══════════ */
+.log-entry{display:flex;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:6px;background:var(--surface);font-size:.85rem;align-items:flex-start}
+.log-entry .log-time{color:var(--text-secondary);white-space:nowrap;flex-shrink:0;font-size:.8rem}
+.log-entry .log-icon{font-size:1rem;flex-shrink:0}
+.log-entry .log-text{flex:1;min-width:0}
+.log-entry.auto{border-left:3px solid var(--green)}
+.log-entry.manual{border-left:3px solid var(--accent)}
+
+/* ═══════════ RECURRING TASKS ═══════════ */
+.task-status{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+.task-status.due{background:var(--yellow-bg);color:var(--yellow)}
+.task-status.ok{background:var(--green-bg);color:var(--green)}
+.task-status.paused{background:var(--surface2);color:var(--text-secondary)}
+.tpl-variant{position:relative;margin-bottom:10px}
+.tpl-variant textarea{width:100%;min-height:60px}
+.tpl-variant .remove-tpl{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:var(--red-bg);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;border:none}
+
+/* ═══════════ TOAST ═══════════ */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:var(--radius);font-size:.9rem;font-weight:600;box-shadow:var(--shadow-lg);z-index:1000;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr}
+  .modal{padding:16px}
+  .main{padding:12px}
+  .share-btn{flex:1;justify-content:center;min-width:calc(50% - 4px)}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="header">
+  <div class="header-left">
+    <span class="logo">🎉</span>
+    <h1>Напоминалка</h1>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" onclick="toggleTheme()" title="Тема">🌙</button>
+  </div>
+</header>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav">
+  <button class="nav-tab active" onclick="showView('dashboard')"><span class="tab-icon">📋</span>Главная</button>
+  <button class="nav-tab" onclick="showView('contacts')"><span class="tab-icon">👥</span>Контакты</button>
+  <button class="nav-tab" onclick="showView('categories')"><span class="tab-icon">🏷️</span>Категории</button>
+  <button class="nav-tab" onclick="showView('holidays')"><span class="tab-icon">🎊</span>Праздники</button>
+  <button class="nav-tab" onclick="showView('templates')"><span class="tab-icon">✉️</span>Шаблоны</button>
+  <button class="nav-tab" onclick="showView('recurring')"><span class="tab-icon">🔄</span>Задачи</button>
+  <button class="nav-tab" onclick="showView('log')"><span class="tab-icon">📜</span>Журнал</button>
+  <button class="nav-tab" onclick="showView('settings')"><span class="tab-icon">⚙️</span>Настройки</button>
+</nav>
+
+<div class="main">
+
+  <!-- ══ DASHBOARD ══ -->
+  <div id="view-dashboard" class="view active">
+    <div id="today-section"></div>
+    <div id="recurring-due-section"></div>
+    <div class="section-title">📅 Ближайшие 7 дней</div>
+    <div id="upcoming-section"></div>
+  </div>
+
+  <!-- ══ CONTACTS ══ -->
+  <div id="view-contacts" class="view">
+    <div class="filter-bar">
+      <input type="search" id="contact-search" placeholder="🔍 Поиск..." oninput="renderContacts()">
+      <button class="btn btn-primary btn-sm" onclick="openContactModal()">+ Добавить</button>
+    </div>
+    <div id="contact-filters" class="chip-row" style="margin-bottom:12px"></div>
+    <div id="contact-list"></div>
+  </div>
+
+  <!-- ══ CATEGORIES ══ -->
+  <div id="view-categories" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="section-title" style="margin:0">🏷️ Категории</div>
+      <button class="btn btn-primary btn-sm" onclick="openCategoryModal()">+ Добавить</button>
+    </div>
+    <div id="category-list"></div>
+  </div>
+
+  <!-- ══ HOLIDAYS ══ -->
+  <div id="view-holidays" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="section-title" style="margin:0">🎊 Праздники</div>
+      <button class="btn btn-primary btn-sm" onclick="openHolidayModal()">+ Добавить</button>
+    </div>
+    <div id="holiday-list"></div>
+  </div>
+
+  <!-- ══ TEMPLATES ══ -->
+  <div id="view-templates" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="section-title" style="margin:0">✉️ Шаблоны</div>
+      <button class="btn btn-primary btn-sm" onclick="openTemplateModal()">+ Добавить</button>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px">Плейсхолдеры: <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{name}</code> — имя, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{sender}</code> — ваше имя, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{age}</code> — возраст, <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{holiday}</code> — праздник</p>
+    <div id="template-list"></div>
+  </div>
+
+  <!-- ══ RECURRING TASKS ══ -->
+  <div id="view-recurring" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="section-title" style="margin:0">🔄 Периодические задачи</div>
+      <button class="btn btn-primary btn-sm" onclick="openRecurringModal()">+ Добавить</button>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px">Регулярные email-запросы с ротацией текстов. Плейсхолдер <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{sender}</code> — ваше имя из настроек.</p>
+    <div id="recurring-list"></div>
+  </div>
+
+  <!-- ══ LOG ══ -->
+  <div id="view-log" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="section-title" style="margin:0">📜 Журнал отправок</div>
+      <button class="btn btn-danger btn-sm" onclick="clearLog()">Очистить</button>
+    </div>
+    <div id="log-list"></div>
+  </div>
+
+  <!-- ══ SETTINGS ══ -->
+  <div id="view-settings" class="view">
+    <div class="section-title">👤 Общие</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">👤 Ваше имя</div><div class="setting-desc">Плейсхолдер {sender} в шаблонах</div></div>
+        <input type="text" id="cfg-sender" style="width:180px" placeholder="Иван" oninput="saveSetting('sender',this.value)">
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">🌙 Тёмная тема</div></div>
+        <div id="theme-toggle-setting" class="toggle on" onclick="toggleTheme()"></div>
+      </div>
+    </div>
+
+    <div class="section-title">🤖 Telegram Bot (бесплатная авто-отправка)</div>
+    <div class="card">
+      <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px">1) Создайте бота через <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> → получите токен<br>2) Каждому контакту пропишите chat_id (пусть отправит боту /start, затем откройте <code style="background:var(--surface2);padding:2px 4px;border-radius:4px;font-size:.75rem">https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code>)</p>
+      <div class="form-group">
+        <label>Bot Token</label>
+        <input type="password" id="cfg-tg-token" placeholder="123456:ABC-DEF..." oninput="saveSetting('tgToken',this.value)">
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="testTgBot()">🧪 Проверить бота</button>
+    </div>
+
+    <div class="section-title">💾 Данные</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">📤 Экспорт</div><div class="setting-desc">Скачать JSON-бэкап</div></div>
+        <button class="btn btn-secondary btn-sm" onclick="exportData()">Скачать</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">📥 Импорт</div><div class="setting-desc">Загрузить из JSON</div></div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('import-file').click()">Загрузить</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">🔔 Уведомления</div><div class="setting-desc">Браузерные уведомления</div></div>
+        <button class="btn btn-secondary btn-sm" onclick="requestNotif()">Включить</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">🗑️ Очистить всё</div></div>
+        <button class="btn btn-danger btn-sm" onclick="clearAll()">Удалить</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;text-align:center;color:var(--text-secondary)">
+      <p>Напоминалка v2.1 — 100% бесплатно</p>
+      <p style="font-size:.78rem;margin-top:4px">Данные в localStorage · Telegram Bot API бесплатный и безлимитный</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CONTACT MODAL ═══════════ -->
+<div class="modal-overlay" id="contact-modal" onclick="if(event.target===this)closeModal('contact-modal')">
+  <div class="modal">
+    <div class="modal-title" id="contact-modal-title">👤 Добавить контакт</div>
+    <input type="hidden" id="c-id">
+    <div class="form-row">
+      <div class="form-group"><label>Имя *</label><input type="text" id="c-name" placeholder="Иван Иванов"></div>
+      <div class="form-group"><label>День рождения</label><input type="date" id="c-birthday"></div>
+    </div>
+    <div class="form-group">
+      <label>Категории</label>
+      <div id="c-categories" class="checkbox-group"></div>
+    </div>
+    <div class="form-group">
+      <label>Режим отправки</label>
+      <select id="c-send-mode">
+        <option value="manual">✋ Ручной — напоминает, отправляете сами</option>
+        <option value="auto">🤖 Авто — Telegram-бот отправляет сам</option>
+      </select>
+    </div>
+    <div class="section-title" style="font-size:.9rem;margin-top:8px">📱 Соцсети и мессенджеры</div>
+    <div class="form-row">
+      <div class="form-group"><label>📱 Телефон</label><input type="tel" id="c-phone" placeholder="+7 999 123 45 67"></div>
+      <div class="form-group"><label>📧 Email</label><input type="email" id="c-email" placeholder="email@example.com"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>✈️ Telegram @</label><input type="text" id="c-telegram" placeholder="@username"></div>
+      <div class="form-group"><label>🤖 TG chat_id (для авто)</label><input type="text" id="c-tg-chat-id" placeholder="123456789"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>📱 WhatsApp</label><input type="tel" id="c-whatsapp" placeholder="+7 999 123 45 67"></div>
+      <div class="form-group"><label>🟣 Viber</label><input type="tel" id="c-viber" placeholder="+7 999 123 45 67"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>🔵 VK</label><input type="text" id="c-vk" placeholder="id или username"></div>
+      <div class="form-group"><label>🟠 Одноклассники</label><input type="text" id="c-ok" placeholder="id профиля"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>📸 Instagram</label><input type="text" id="c-instagram" placeholder="@username"></div>
+      <div class="form-group"><label>🔵 Facebook</label><input type="text" id="c-facebook" placeholder="username"></div>
+    </div>
+    <div class="form-group"><label>🟪 Discord</label><input type="text" id="c-discord" placeholder="username"></div>
+    <div class="form-group"><label>📝 Заметки</label><textarea id="c-notes" placeholder="Любые заметки..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveContact()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('contact-modal')">Отмена</button>
+      <button class="btn btn-danger" id="c-delete-btn" style="display:none;margin-left:auto" onclick="deleteContact()">🗑️ Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CATEGORY MODAL ═══════════ -->
+<div class="modal-overlay" id="category-modal" onclick="if(event.target===this)closeModal('category-modal')">
+  <div class="modal">
+    <div class="modal-title" id="cat-modal-title">🏷️ Добавить категорию</div>
+    <input type="hidden" id="cat-id">
+    <div class="form-group"><label>Название</label><input type="text" id="cat-name" placeholder="Название"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Эмодзи</label><input type="text" id="cat-icon" placeholder="👨‍👩‍👧" maxlength="4"></div>
+      <div class="form-group"><label>Цвет</label><input type="color" id="cat-color" value="#818cf8" style="height:42px;padding:4px"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveCategory()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('category-modal')">Отмена</button>
+      <button class="btn btn-danger" id="cat-delete-btn" style="display:none;margin-left:auto" onclick="deleteCategory()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ HOLIDAY MODAL ═══════════ -->
+<div class="modal-overlay" id="holiday-modal" onclick="if(event.target===this)closeModal('holiday-modal')">
+  <div class="modal">
+    <div class="modal-title" id="hol-modal-title">🎊 Добавить событие</div>
+    <input type="hidden" id="hol-id">
+    <div class="form-group"><label>Название</label><input type="text" id="hol-name" placeholder="Название праздника"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Дата</label><input type="date" id="hol-date"></div>
+      <div class="form-group"><label>Тип</label>
+        <select id="hol-type">
+          <option value="national">🇷🇺 Государственный</option>
+          <option value="professional">💼 Профессиональный</option>
+          <option value="custom">📌 Свой</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Поздравлять категории</label><div id="hol-categories" class="checkbox-group"></div></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveHoliday()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('holiday-modal')">Отмена</button>
+      <button class="btn btn-danger" id="hol-delete-btn" style="display:none;margin-left:auto" onclick="deleteHoliday()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TEMPLATE MODAL ═══════════ -->
+<div class="modal-overlay" id="template-modal" onclick="if(event.target===this)closeModal('template-modal')">
+  <div class="modal">
+    <div class="modal-title" id="tpl-modal-title">✉️ Шаблон</div>
+    <input type="hidden" id="tpl-id">
+    <div class="form-row">
+      <div class="form-group"><label>Тип события</label>
+        <select id="tpl-event-type">
+          <option value="birthday">🎂 День рождения</option>
+          <option value="national">🇷🇺 Гос. праздник</option>
+          <option value="professional">💼 Проф. праздник</option>
+          <option value="custom">📌 Своё</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Категория</label><select id="tpl-category"></select></div>
+    </div>
+    <div class="form-group"><label>Текст ({name}, {sender}, {age}, {holiday})</label><textarea id="tpl-text" rows="4" placeholder="{name}, поздравляю с ..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveTemplate()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('template-modal')">Отмена</button>
+      <button class="btn btn-danger" id="tpl-delete-btn" style="display:none;margin-left:auto" onclick="deleteTemplate()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ RECURRING TASK MODAL ═══════════ -->
+<div class="modal-overlay" id="recurring-modal" onclick="if(event.target===this)closeModal('recurring-modal')">
+  <div class="modal">
+    <div class="modal-title" id="rec-modal-title">🔄 Новая задача</div>
+    <input type="hidden" id="rec-id">
+    <div class="form-group"><label>Название задачи *</label><input type="text" id="rec-name" placeholder="Запрос места в садик"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Получатель</label><input type="text" id="rec-recipient" placeholder="Przedszkole nr 5"></div>
+      <div class="form-group"><label>Email получателя *</label><input type="email" id="rec-email" placeholder="info@example.pl"></div>
+    </div>
+    <div class="form-group"><label>Тема письма</label><input type="text" id="rec-subject" placeholder="Zapytanie o wolne miejsca"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Интервал</label>
+        <select id="rec-interval" onchange="toggleRecDayFields()">
+          <option value="weekly">Еженедельно</option>
+          <option value="biweekly">Раз в 2 недели</option>
+          <option value="monthly">Ежемесячно</option>
+        </select>
+      </div>
+      <div class="form-group" id="rec-dow-group"><label>День недели</label>
+        <select id="rec-dow">
+          <option value="1">Понедельник</option>
+          <option value="2">Вторник</option>
+          <option value="3">Среда</option>
+          <option value="4">Четверг</option>
+          <option value="5">Пятница</option>
+          <option value="6">Суббота</option>
+          <option value="0">Воскресенье</option>
+        </select>
+      </div>
+      <div class="form-group" id="rec-dom-group" style="display:none"><label>День месяца</label>
+        <input type="number" id="rec-dom" min="1" max="28" value="1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Варианты текста (ротация)</label>
+      <div id="rec-templates-list"></div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addRecTplField()">+ Добавить вариант</button>
+    </div>
+    <div class="form-group">
+      <label>Статус</label>
+      <select id="rec-active">
+        <option value="1">✅ Активна</option>
+        <option value="0">⏸️ Приостановлена</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveRecurring()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('recurring-modal')">Отмена</button>
+      <button class="btn btn-danger" id="rec-delete-btn" style="display:none;margin-left:auto" onclick="deleteRecurring()">🗑️ Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ GREETING MODAL ═══════════ -->
+<div class="modal-overlay" id="greeting-modal" onclick="if(event.target===this)closeModal('greeting-modal')">
+  <div class="modal">
+    <div class="modal-title">🎉 Поздравить</div>
+    <div id="greet-person-info" style="margin-bottom:12px"></div>
+    <div class="template-controls">
+      <select id="greet-tpl-select" onchange="applyGreetTpl()"></select>
+      <button class="btn btn-secondary btn-sm" onclick="shuffleTpl()">🔄</button>
+    </div>
+    <textarea id="greet-text" class="greeting-preview" rows="4"></textarea>
+    <div class="share-row" id="share-buttons"></div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-secondary" onclick="closeModal('greeting-modal')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA LAYER
+   ═══════════════════════════════════════════════ */
+const SK = {
+  contacts:'rm_contacts', categories:'rm_categories', holidays:'rm_holidays',
+  templates:'rm_templates', sent:'rm_sent', theme:'rm_theme', seeded:'rm_seeded',
+  tgToken:'rm_tg_token', sender:'rm_sender', log:'rm_log',
+  recurring:'rm_recurring'
+};
+
+function sv(k,d){localStorage.setItem(k,JSON.stringify(d))}
+function ld(k,fb){try{return JSON.parse(localStorage.getItem(k))||fb}catch{return fb}}
+function gid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+/* ═══════════ SEED DATA ═══════════ */
+const DEF_CATS = [
+  {id:'cat_family',name:'Семья',icon:'👨‍👩‍👧',color:'#f87171',builtIn:true},
+  {id:'cat_friends',name:'Друзья',icon:'🤝',color:'#fbbf24',builtIn:true},
+  {id:'cat_colleagues',name:'Коллеги',icon:'💼',color:'#60a5fa',builtIn:true},
+  {id:'cat_godchildren',name:'Крестники',icon:'👶',color:'#a78bfa',builtIn:true}
+];
+const DEF_HOLIDAYS = [
+  {id:'h1',name:'Новый год',date:'01-01',type:'national',categoryIds:[],builtIn:true},
+  {id:'h2',name:'Рождество',date:'01-07',type:'national',categoryIds:['cat_family'],builtIn:true},
+  {id:'h3',name:'День защитника Отечества',date:'02-23',type:'national',categoryIds:[],builtIn:true},
+  {id:'h4',name:'Международный женский день',date:'03-08',type:'national',categoryIds:[],builtIn:true},
+  {id:'h5',name:'Праздник Весны и Труда',date:'05-01',type:'national',categoryIds:[],builtIn:true},
+  {id:'h6',name:'День Победы',date:'05-09',type:'national',categoryIds:['cat_family'],builtIn:true},
+  {id:'h7',name:'День защиты детей',date:'06-01',type:'national',categoryIds:['cat_family','cat_godchildren'],builtIn:true},
+  {id:'h8',name:'День России',date:'06-12',type:'national',categoryIds:[],builtIn:true},
+  {id:'h9',name:'День учителя',date:'10-05',type:'professional',categoryIds:['cat_colleagues'],builtIn:true},
+  {id:'h10',name:'День народного единства',date:'11-04',type:'national',categoryIds:[],builtIn:true}
+];
+const DEF_TEMPLATES = [
+  {id:'t1',eventType:'birthday',categoryId:'cat_family',text:'Дорогой(ая) {name}, с Днём рождения! 🎂 Желаю крепкого здоровья, счастья и исполнения желаний! Люблю! ❤️ {sender}',builtIn:true},
+  {id:'t2',eventType:'birthday',categoryId:'cat_friends',text:'{name}, с Днюхой! 🎉🥳 Желаю, чтобы всё было по кайфу! 🍻 {sender}',builtIn:true},
+  {id:'t3',eventType:'birthday',categoryId:'cat_colleagues',text:'{name}, поздравляю с Днём рождения! 🎂 Успехов и карьерного роста! 🚀',builtIn:true},
+  {id:'t4',eventType:'birthday',categoryId:'cat_godchildren',text:'Дорогой(ая) {name}, с Днём рождения, крестник(ца)! 🎂🌟 Расти здоровым(ой) и счастливым(ой)! 💝 {sender}',builtIn:true},
+  {id:'t5',eventType:'birthday',categoryId:null,text:'{name}, с Днём рождения! 🎂🎉 Всего наилучшего! {sender}',builtIn:true},
+  {id:'t6',eventType:'national',categoryId:null,text:'{name}, с праздником — {holiday}! 🎉 Отличного настроения! ✨',builtIn:true},
+  {id:'t7',eventType:'national',categoryId:'cat_family',text:'Дорогой(ая) {name}, с {holiday}! 🎊 Любви, мира и гармонии! ❤️ {sender}',builtIn:true},
+  {id:'t8',eventType:'professional',categoryId:'cat_colleagues',text:'{name}, с профессиональным праздником — {holiday}! 🎖️ Успехов! 💪',builtIn:true},
+  {id:'t9',eventType:'national',categoryId:'cat_friends',text:'{name}, с {holiday}! 🎊 Веселья и незабываемых моментов! 🥂',builtIn:true},
+  {id:'t10',eventType:'professional',categoryId:null,text:'{name}, с {holiday}! 💼 Успехов в работе и вдохновения! ✨',builtIn:true},
+  {id:'t11',eventType:'birthday',categoryId:'cat_family',text:'{name}, тебе сегодня {age}! 🎂 Оставайся таким(ой) же замечательным(ой)! С любовью, {sender} ❤️',builtIn:true},
+  {id:'t12',eventType:'birthday',categoryId:'cat_friends',text:'{name}, {age} — это только начало! 🚀🎂 Всё лучшее впереди! {sender}',builtIn:true}
+];
+
+const DEF_RECURRING = [
+  {id:'rec_kindergarten',name:'Запрос места в садик',recipientName:'Przedszkole',recipientEmail:'',
+   subject:'Zapytanie o wolne miejsca w przedszkolu',
+   templates:[
+     'Dzień dobry,\n\nchciałabym zapytać, czy w Państwa przedszkolu są aktualnie wolne miejsca dla dziecka?\n\nZ góry dziękuję za odpowiedź.\nZ poważaniem, {sender}',
+     'Szanowni Państwo,\n\nzwracam się z uprzejmym pytaniem o dostępność miejsc w przedszkolu na bieżący rok szkolny.\n\nBędę wdzięczna za informację.\nPozdrawiam, {sender}',
+     'Witam serdecznie,\n\nczy istnieje możliwość zapisania dziecka do Państwa przedszkola? Proszę o informację o wolnych miejscach.\n\nZ wyrazami szacunku, {sender}',
+     'Dzień dobry,\n\npiszę z zapytaniem o wolne miejsca w przedszkolu. Czy prowadzą Państwo listę oczekujących?\n\nDziękuję i pozdrawiam, {sender}',
+     'Szanowni Państwo,\n\njestem zainteresowana zapisaniem dziecka do przedszkola. Czy są jeszcze wolne miejsca? Proszę o kontakt.\n\nZ poważaniem, {sender}',
+     'Witam,\n\nchciałabym uzyskać informację na temat rekrutacji do przedszkola. Czy są dostępne miejsca?\n\nBędę wdzięczna za odpowiedź.\nPozdrawiam serdecznie, {sender}'
+   ],
+   interval:'weekly',dayOfWeek:1,dayOfMonth:1,
+   lastSent:null,lastTemplateIdx:-1,active:true,
+   createdAt:new Date().toISOString(),builtIn:true}
+];
+
+function seedIfNeeded(){
+  if(ld(SK.seeded,false))return;
+  // migrate v1 keys
+  const old=ld('reminder_contacts',null);
+  if(old){
+    sv(SK.contacts,old);sv(SK.categories,ld('reminder_categories',[]));
+    sv(SK.holidays,ld('reminder_holidays',[]));sv(SK.templates,ld('reminder_templates',[]));
+    sv(SK.sent,ld('reminder_sent',{}));
+    ['reminder_contacts','reminder_categories','reminder_holidays','reminder_templates','reminder_sent','reminder_seeded','reminder_theme'].forEach(k=>localStorage.removeItem(k));
+  } else {
+    sv(SK.contacts,[]);sv(SK.categories,DEF_CATS);
+    sv(SK.holidays,DEF_HOLIDAYS);sv(SK.templates,DEF_TEMPLATES);
+    sv(SK.sent,{});
+  }
+  sv(SK.log,[]);
+  sv(SK.recurring,DEF_RECURRING);
+  sv(SK.seeded,true);
+}
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════ */
+function getCats(){return ld(SK.categories,[])}
+function getContacts(){return ld(SK.contacts,[])}
+function getHolidays(){return ld(SK.holidays,[])}
+function getTpls(){return ld(SK.templates,[])}
+function getSent(){return ld(SK.sent,{})}
+function getLog(){return ld(SK.log,[])}
+function getRecurring(){return ld(SK.recurring,[])}
+function catById(id){return getCats().find(c=>c.id===id)}
+
+function fmtMMDD(date){const d=new Date(date);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todayMMDD(){const d=new Date();return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+todayMMDD()}
+function fmtRu(mmdd){
+  const[m,d]=mmdd.split('-').map(Number);
+  const mo=['','янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  return d+' '+mo[m];
+}
+function fmtRuFull(mmdd){
+  const[m,d]=mmdd.split('-').map(Number);
+  const mo=['','января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  return d+' '+mo[m];
+}
+function daysUntil(mmdd){
+  const n=new Date(),y=n.getFullYear(),[m,d]=mmdd.split('-').map(Number);
+  let t=new Date(y,m-1,d);
+  const td=new Date(y,n.getMonth(),n.getDate());
+  if(t<td)t=new Date(y+1,m-1,d);
+  return Math.round((t-td)/864e5);
+}
+function calcAge(bday){
+  const b=new Date(bday),n=new Date();
+  let a=n.getFullYear()-b.getFullYear();
+  if(n.getMonth()<b.getMonth()||(n.getMonth()===b.getMonth()&&n.getDate()<b.getDate()))a--;
+  return a>0&&a<150?a:0;
+}
+
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function openModal(id){document.getElementById(id).classList.add('open')}
+
+function addLog(type,name,channel,text){
+  const log=getLog();
+  log.unshift({time:new Date().toISOString(),type,name,channel,text:text.substring(0,200)});
+  if(log.length>500)log.length=500;
+  sv(SK.log,log);
+}
+
+/* ═══════════════════════════════════════════════
+   VIEW SWITCHING
+   ═══════════════════════════════════════════════ */
+let curView='dashboard';
+const VIEWS=['dashboard','contacts','categories','holidays','templates','recurring','log','settings'];
+
+function showView(id){
+  curView=id;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',VIEWS[i]===id));
+  const r={dashboard:renderDashboard,contacts:renderContacts,categories:renderCategories,
+    holidays:renderHolidays,templates:renderTemplates,recurring:renderRecurring,log:renderLog,settings:loadSettings};
+  if(r[id])r[id]();
+}
+
+/* ═══════════════════════════════════════════════
+   THEME
+   ═══════════════════════════════════════════════ */
+function toggleTheme(){
+  const h=document.documentElement,dk=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',dk?'light':'dark');
+  sv(SK.theme,dk?'light':'dark');
+  document.querySelector('.header-right .icon-btn').textContent=dk?'☀️':'🌙';
+  const el=document.getElementById('theme-toggle-setting');
+  if(el)el.classList.toggle('on',!dk);
+}
+function loadTheme(){
+  const t=ld(SK.theme,'dark');
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelector('.header-right .icon-btn').textContent=t==='dark'?'🌙':'☀️';
+}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS
+   ═══════════════════════════════════════════════ */
+function loadSettings(){
+  document.getElementById('cfg-sender').value=ld(SK.sender,'')||'';
+  document.getElementById('cfg-tg-token').value=ld(SK.tgToken,'')||'';
+  const dk=document.documentElement.getAttribute('data-theme')==='dark';
+  document.getElementById('theme-toggle-setting').classList.toggle('on',dk);
+}
+function saveSetting(key,val){sv(SK[key],val.trim())}
+
+async function testTgBot(){
+  const token=document.getElementById('cfg-tg-token').value.trim();
+  if(!token){toast('⚠️ Введите токен');return}
+  try{
+    const r=await fetch('https://api.telegram.org/bot'+token+'/getMe');
+    const d=await r.json();
+    if(d.ok)toast('✅ Бот: @'+d.result.username);
+    else toast('❌ Неверный токен');
+  }catch(e){toast('❌ '+e.message)}
+}
+
+/* ═══════════════════════════════════════════════
+   CONTACTS
+   ═══════════════════════════════════════════════ */
+let filterCat=null;
+const CF=['c-id','c-name','c-birthday','c-phone','c-email','c-telegram','c-tg-chat-id','c-whatsapp','c-viber','c-vk','c-ok','c-instagram','c-facebook','c-discord','c-notes','c-send-mode'];
+const CK=['id','name','birthday','phone','email','telegram','tgChatId','whatsapp','viber','vk','ok','instagram','facebook','discord','notes','sendMode'];
+
+function renderContacts(){
+  const cats=getCats(),q=(document.getElementById('contact-search').value||'').toLowerCase();
+  let list=getContacts();
+  if(filterCat)list=list.filter(c=>(c.categoryIds||[]).includes(filterCat));
+  if(q)list=list.filter(c=>c.name.toLowerCase().includes(q));
+
+  document.getElementById('contact-filters').innerHTML=
+    '<span class="filter-chip '+ (!filterCat?'active':'') +'" onclick="filterCat=null;renderContacts()">Все</span>'+
+    cats.map(c=>'<span class="filter-chip '+(filterCat===c.id?'active':'')+'" onclick="filterCat=\''+c.id+'\';renderContacts()">'+c.icon+' '+c.name+'</span>').join('');
+
+  const el=document.getElementById('contact-list');
+  if(!list.length){el.innerHTML='<div class="empty-state"><span class="big-emoji">👥</span><p>Нет контактов</p><p style="font-size:.85rem;margin-top:8px">Нажмите «+ Добавить»</p></div>';return}
+
+  el.innerHTML=list.map(c=>{
+    const chips=(c.categoryIds||[]).map(cid=>{const cat=cats.find(x=>x.id===cid);return cat?'<span class="chip" style="background:'+cat.color+'22;color:'+cat.color+'">'+cat.icon+' '+cat.name+'</span>':''}).join('');
+    const bday=c.birthday?'🎂 '+fmtRuFull(fmtMMDD(c.birthday)):'';
+    const mode=c.sendMode==='auto'?'<span class="mode-badge auto">🤖 АВТО</span>':'';
+    const init=c.name.charAt(0).toUpperCase();
+    const soc=[c.phone&&'📱',c.telegram&&'✈️',c.whatsapp&&'📱',c.viber&&'🟣',c.email&&'📧',c.vk&&'🔵',c.ok&&'🟠',c.instagram&&'📸',c.facebook&&'🔵',c.discord&&'🟪'].filter(Boolean).join(' ');
+    return '<div class="card" onclick="openContactModal(\''+c.id+'\')" style="cursor:pointer">'+
+      '<div class="card-header">'+
+        '<div class="card-title"><span style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--accent-bg);align-items:center;justify-content:center;font-weight:700;color:var(--accent)">'+init+'</span> '+escH(c.name)+' '+mode+'</div>'+
+        '<div class="card-subtitle">'+bday+'</div>'+
+      '</div>'+
+      '<div class="chip-row">'+chips+'</div>'+
+      (soc?'<div style="font-size:.75rem;color:var(--text-secondary);margin-top:6px">'+soc+'</div>':'')+
+    '</div>';
+  }).join('');
+}
+
+function openContactModal(id){
+  CF.forEach(f=>{const el=document.getElementById(f);if(el)el.value=''});
+  document.getElementById('c-send-mode').value='manual';
+  let selCats=[];
+  if(id){
+    const c=getContacts().find(x=>x.id===id);
+    if(c){CK.forEach((k,i)=>{const el=document.getElementById(CF[i]);if(el&&c[k])el.value=c[k]});selCats=c.categoryIds||[]}
+    document.getElementById('contact-modal-title').textContent='✏️ Редактировать контакт';
+    document.getElementById('c-delete-btn').style.display='';
+  } else {
+    document.getElementById('contact-modal-title').textContent='👤 Добавить контакт';
+    document.getElementById('c-delete-btn').style.display='none';
+  }
+  document.getElementById('c-categories').innerHTML=getCats().map(c=>
+    '<label class="checkbox-label"><input type="checkbox" value="'+c.id+'" '+(selCats.includes(c.id)?'checked':'')+'>'+c.icon+' '+c.name+'</label>').join('');
+  openModal('contact-modal');
+}
+
+function saveContact(){
+  const name=document.getElementById('c-name').value.trim();
+  if(!name){toast('⚠️ Введите имя');return}
+  const id=document.getElementById('c-id').value||gid();
+  const catIds=[...document.querySelectorAll('#c-categories input:checked')].map(i=>i.value);
+  const contact={id,name,categoryIds:catIds};
+  CK.forEach((k,i)=>{if(k!=='id'&&k!=='name'){const el=document.getElementById(CF[i]);contact[k]=el?el.value.trim():''}});
+  contact.categoryIds=catIds;
+  const all=getContacts(),idx=all.findIndex(c=>c.id===id);
+  if(idx>=0)all[idx]=contact;else all.push(contact);
+  sv(SK.contacts,all);
+  closeModal('contact-modal');renderContacts();toast('✅ Контакт сохранён');
+}
+
+function deleteContact(){
+  const id=document.getElementById('c-id').value;
+  if(!id||!confirm('Удалить контакт?'))return;
+  sv(SK.contacts,getContacts().filter(c=>c.id!==id));
+  closeModal('contact-modal');renderContacts();toast('🗑️ Удалено');
+}
+
+/* ═══════════════════════════════════════════════
+   CATEGORIES
+   ═══════════════════════════════════════════════ */
+function renderCategories(){
+  const cats=getCats(),contacts=getContacts();
+  document.getElementById('category-list').innerHTML=cats.map(c=>{
+    const cnt=contacts.filter(x=>(x.categoryIds||[]).includes(c.id)).length;
+    return '<div class="card" onclick="openCategoryModal(\''+c.id+'\')" style="cursor:pointer">'+
+      '<div class="card-header">'+
+        '<div class="card-title"><span class="cat-dot" style="background:'+c.color+'"></span> '+c.icon+' '+escH(c.name)+'</div>'+
+        '<div class="card-subtitle">'+cnt+' конт. '+(c.builtIn?'· встроенная':'')+'</div>'+
+      '</div></div>';
+  }).join('');
+}
+
+function openCategoryModal(id){
+  document.getElementById('cat-id').value='';
+  document.getElementById('cat-name').value='';
+  document.getElementById('cat-icon').value='📌';
+  document.getElementById('cat-color').value='#818cf8';
+  document.getElementById('cat-delete-btn').style.display='none';
+  document.getElementById('cat-modal-title').textContent='🏷️ Добавить категорию';
+  if(id){
+    const c=getCats().find(x=>x.id===id);
+    if(c){
+      document.getElementById('cat-id').value=c.id;
+      document.getElementById('cat-name').value=c.name;
+      document.getElementById('cat-icon').value=c.icon;
+      document.getElementById('cat-color').value=c.color;
+      document.getElementById('cat-modal-title').textContent='✏️ Категория';
+      if(!c.builtIn)document.getElementById('cat-delete-btn').style.display='';
+    }
+  }
+  openModal('category-modal');
+}
+
+function saveCategory(){
+  const name=document.getElementById('cat-name').value.trim();
+  if(!name){toast('⚠️ Введите название');return}
+  const id=document.getElementById('cat-id').value||gid();
+  const cats=getCats(),ex=cats.find(c=>c.id===id);
+  const cat={id,name,icon:document.getElementById('cat-icon').value||'📌',color:document.getElementById('cat-color').value,builtIn:ex?ex.builtIn:false};
+  const idx=cats.findIndex(c=>c.id===id);
+  if(idx>=0)cats[idx]=cat;else cats.push(cat);
+  sv(SK.categories,cats);
+  closeModal('category-modal');renderCategories();toast('✅ Сохранено');
+}
+
+function deleteCategory(){
+  const id=document.getElementById('cat-id').value;
+  if(!id||!confirm('Удалить категорию?'))return;
+  sv(SK.contacts,getContacts().map(c=>({...c,categoryIds:(c.categoryIds||[]).filter(x=>x!==id)})));
+  sv(SK.categories,getCats().filter(c=>c.id!==id));
+  closeModal('category-modal');renderCategories();toast('🗑️ Удалено');
+}
+
+/* ═══════════════════════════════════════════════
+   HOLIDAYS
+   ═══════════════════════════════════════════════ */
+function renderHolidays(){
+  const hols=getHolidays(),cats=getCats();
+  const tl={national:'🇷🇺 Гос.',professional:'💼 Проф.',custom:'📌 Свой'};
+  const sorted=[...hols].sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('holiday-list').innerHTML=sorted.map(h=>{
+    const chips=(h.categoryIds||[]).filter(Boolean).map(cid=>{const cat=cats.find(x=>x.id===cid);return cat?'<span class="chip" style="background:'+cat.color+'22;color:'+cat.color+'">'+cat.icon+' '+cat.name+'</span>':''}).join('');
+    const allN=(!h.categoryIds||!h.categoryIds.length)?'<span style="font-size:.8rem;color:var(--text-secondary)">→ все</span>':'';
+    return '<div class="card" onclick="openHolidayModal(\''+h.id+'\')" style="cursor:pointer">'+
+      '<div class="card-header"><div class="card-title">'+escH(h.name)+'</div><span class="event-badge holiday">'+fmtRuFull(h.date)+'</span></div>'+
+      '<div class="chip-row"><span class="chip">'+(tl[h.type]||h.type)+'</span> '+chips+' '+allN+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function openHolidayModal(id){
+  ['hol-id','hol-name','hol-date'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('hol-type').value='national';
+  document.getElementById('hol-delete-btn').style.display='none';
+  document.getElementById('hol-modal-title').textContent='🎊 Добавить';
+  let sc=[];
+  if(id){
+    const h=getHolidays().find(x=>x.id===id);
+    if(h){
+      document.getElementById('hol-id').value=h.id;
+      document.getElementById('hol-name').value=h.name;
+      const[m,d]=h.date.split('-');
+      document.getElementById('hol-date').value='2024-'+m+'-'+d;
+      document.getElementById('hol-type').value=h.type;
+      sc=h.categoryIds||[];
+      document.getElementById('hol-modal-title').textContent='✏️ Событие';
+      if(!h.builtIn)document.getElementById('hol-delete-btn').style.display='';
+    }
+  }
+  document.getElementById('hol-categories').innerHTML=getCats().map(c=>
+    '<label class="checkbox-label"><input type="checkbox" value="'+c.id+'" '+(sc.includes(c.id)?'checked':'')+'>'+c.icon+' '+c.name+'</label>').join('');
+  openModal('holiday-modal');
+}
+
+function saveHoliday(){
+  const name=document.getElementById('hol-name').value.trim(),dv=document.getElementById('hol-date').value;
+  if(!name||!dv){toast('⚠️ Заполните поля');return}
+  const id=document.getElementById('hol-id').value||gid();
+  const catIds=[...document.querySelectorAll('#hol-categories input:checked')].map(i=>i.value);
+  const hols=getHolidays(),ex=hols.find(h=>h.id===id);
+  const hol={id,name,date:fmtMMDD(dv),type:document.getElementById('hol-type').value,categoryIds:catIds,builtIn:ex?ex.builtIn:false};
+  const idx=hols.findIndex(h=>h.id===id);
+  if(idx>=0)hols[idx]=hol;else hols.push(hol);
+  sv(SK.holidays,hols);
+  closeModal('holiday-modal');renderHolidays();toast('✅ Сохранено');
+}
+
+function deleteHoliday(){
+  const id=document.getElementById('hol-id').value;
+  if(!id||!confirm('Удалить?'))return;
+  sv(SK.holidays,getHolidays().filter(h=>h.id!==id));
+  closeModal('holiday-modal');renderHolidays();toast('🗑️ Удалено');
+}
+
+/* ═══════════════════════════════════════════════
+   TEMPLATES
+   ═══════════════════════════════════════════════ */
+function renderTemplates(){
+  const tpls=getTpls(),cats=getCats();
+  const tl={birthday:'🎂 ДР',national:'🇷🇺 Гос.',professional:'💼 Проф.',custom:'📌 Своё'};
+  document.getElementById('template-list').innerHTML=tpls.map(t=>{
+    const cat=t.categoryId?cats.find(c=>c.id===t.categoryId):null;
+    const cl=cat?cat.icon+' '+cat.name:'📣 Все';
+    return '<div class="card" onclick="openTemplateModal(\''+t.id+'\')" style="cursor:pointer">'+
+      '<div class="card-header"><div><span class="chip">'+(tl[t.eventType]||t.eventType)+'</span> <span class="chip">'+cl+'</span></div></div>'+
+      '<div style="font-size:.85rem;color:var(--text-secondary);margin-top:8px;max-height:50px;overflow:hidden">'+escH(t.text)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function openTemplateModal(id){
+  document.getElementById('tpl-id').value='';
+  document.getElementById('tpl-event-type').value='birthday';
+  document.getElementById('tpl-text').value='';
+  document.getElementById('tpl-delete-btn').style.display='none';
+  document.getElementById('tpl-modal-title').textContent='✉️ Новый шаблон';
+  const cats=getCats();
+  document.getElementById('tpl-category').innerHTML='<option value="">📣 Все</option>'+cats.map(c=>'<option value="'+c.id+'">'+c.icon+' '+c.name+'</option>').join('');
+  if(id){
+    const t=getTpls().find(x=>x.id===id);
+    if(t){
+      document.getElementById('tpl-id').value=t.id;
+      document.getElementById('tpl-event-type').value=t.eventType;
+      document.getElementById('tpl-category').value=t.categoryId||'';
+      document.getElementById('tpl-text').value=t.text;
+      document.getElementById('tpl-modal-title').textContent='✏️ Шаблон';
+      if(!t.builtIn)document.getElementById('tpl-delete-btn').style.display='';
+    }
+  }
+  openModal('template-modal');
+}
+
+function saveTemplate(){
+  const text=document.getElementById('tpl-text').value.trim();
+  if(!text){toast('⚠️ Введите текст');return}
+  const id=document.getElementById('tpl-id').value||gid();
+  const tpls=getTpls(),ex=tpls.find(t=>t.id===id);
+  const tpl={id,eventType:document.getElementById('tpl-event-type').value,categoryId:document.getElementById('tpl-category').value||null,text,builtIn:ex?ex.builtIn:false};
+  const idx=tpls.findIndex(t=>t.id===id);
+  if(idx>=0)tpls[idx]=tpl;else tpls.push(tpl);
+  sv(SK.templates,tpls);
+  closeModal('template-modal');renderTemplates();toast('✅ Сохранено');
+}
+
+function deleteTemplate(){
+  const id=document.getElementById('tpl-id').value;
+  if(!id||!confirm('Удалить?'))return;
+  sv(SK.templates,getTpls().filter(t=>t.id!==id));
+  closeModal('template-modal');renderTemplates();toast('🗑️ Удалено');
+}
+
+/* ═══════════════════════════════════════════════
+   RECURRING TASKS
+   ═══════════════════════════════════════════════ */
+const DOW_NAMES=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+
+function isDue(task){
+  if(!task.active)return false;
+  const now=new Date(),day=now.getDay();
+  if(!task.lastSent){
+    if(task.interval==='monthly')return now.getDate()===task.dayOfMonth;
+    return day===task.dayOfWeek;
+  }
+  const last=new Date(task.lastSent);
+  const diffDays=Math.floor((now-last)/864e5);
+  if(task.interval==='weekly')return day===task.dayOfWeek&&diffDays>=6;
+  if(task.interval==='biweekly')return day===task.dayOfWeek&&diffDays>=13;
+  if(task.interval==='monthly')return now.getDate()===task.dayOfMonth&&(now.getMonth()!==last.getMonth()||now.getFullYear()!==last.getFullYear());
+  return false;
+}
+
+function nextDueDate(task){
+  const now=new Date();
+  if(task.interval==='monthly'){
+    let d=new Date(now.getFullYear(),now.getMonth(),task.dayOfMonth);
+    if(d<=now)d=new Date(now.getFullYear(),now.getMonth()+1,task.dayOfMonth);
+    return d;
+  }
+  // weekly / biweekly
+  let d=new Date(now);
+  for(let i=1;i<=14;i++){
+    d.setDate(d.getDate()+1);
+    if(d.getDay()===task.dayOfWeek){
+      if(task.interval==='biweekly'&&task.lastSent){
+        const last=new Date(task.lastSent);
+        if(Math.floor((d-last)/864e5)<14)continue;
+      }
+      return d;
+    }
+  }
+  return d;
+}
+
+function intervalLabel(t){
+  if(t.interval==='weekly')return 'Еженедельно · '+DOW_NAMES[t.dayOfWeek];
+  if(t.interval==='biweekly')return 'Раз в 2 нед. · '+DOW_NAMES[t.dayOfWeek];
+  return 'Ежемесячно · '+t.dayOfMonth+' числа';
+}
+
+function renderRecurring(){
+  const tasks=getRecurring(),el=document.getElementById('recurring-list');
+  if(!tasks.length){el.innerHTML='<div class="empty-state"><span class="big-emoji">🔄</span><p>Нет задач</p><p style="font-size:.85rem;margin-top:8px">Нажмите «+ Добавить»</p></div>';return}
+  el.innerHTML=tasks.map(t=>{
+    const due=isDue(t);
+    const statusCls=!t.active?'paused':due?'due':'ok';
+    const statusText=!t.active?'⏸️ Пауза':due?'⚡ Пора отправить!':'✅ Следующее: '+nextDueDate(t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+    const lastTxt=t.lastSent?'Последнее: '+new Date(t.lastSent).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}):'Ещё не отправлялось';
+    return '<div class="card">'+
+      '<div class="card-header">'+
+        '<div class="card-title">'+escH(t.name)+'</div>'+
+        '<span class="task-status '+statusCls+'">'+statusText+'</span>'+
+      '</div>'+
+      '<div class="card-subtitle">📧 '+escH(t.recipientName||t.recipientEmail)+' · '+intervalLabel(t)+' · '+t.templates.length+' вариант(ов)</div>'+
+      '<div style="font-size:.8rem;color:var(--text-secondary);margin-top:4px">'+lastTxt+'</div>'+
+      '<div class="btn-row" style="margin-top:10px">'+
+        (t.active&&due?'<button class="btn btn-primary btn-sm" onclick="sendRecurring(\''+t.id+'\')">📧 Отправить</button>':'')+
+        '<button class="btn btn-secondary btn-sm" onclick="openRecurringModal(\''+t.id+'\')">✏️ Редактировать</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function toggleRecDayFields(){
+  const v=document.getElementById('rec-interval').value;
+  document.getElementById('rec-dow-group').style.display=(v==='monthly')?'none':'';
+  document.getElementById('rec-dom-group').style.display=(v==='monthly')?'':'none';
+}
+
+let recTplCount=0;
+function addRecTplField(text){
+  recTplCount++;
+  const div=document.createElement('div');
+  div.className='tpl-variant';
+  div.id='rec-tpl-'+recTplCount;
+  div.innerHTML='<textarea placeholder="Вариант текста '+recTplCount+'...">'+(text?escH(text):'')+'</textarea>'+
+    '<button class="remove-tpl" onclick="document.getElementById(\'rec-tpl-'+recTplCount+'\').remove()">✕</button>';
+  document.getElementById('rec-templates-list').appendChild(div);
+}
+
+function openRecurringModal(id){
+  document.getElementById('rec-id').value='';
+  document.getElementById('rec-name').value='';
+  document.getElementById('rec-recipient').value='';
+  document.getElementById('rec-email').value='';
+  document.getElementById('rec-subject').value='';
+  document.getElementById('rec-interval').value='weekly';
+  document.getElementById('rec-dow').value='1';
+  document.getElementById('rec-dom').value='1';
+  document.getElementById('rec-active').value='1';
+  document.getElementById('rec-delete-btn').style.display='none';
+  document.getElementById('rec-modal-title').textContent='🔄 Новая задача';
+  document.getElementById('rec-templates-list').innerHTML='';
+  recTplCount=0;
+  toggleRecDayFields();
+
+  if(id){
+    const t=getRecurring().find(x=>x.id===id);
+    if(t){
+      document.getElementById('rec-id').value=t.id;
+      document.getElementById('rec-name').value=t.name;
+      document.getElementById('rec-recipient').value=t.recipientName||'';
+      document.getElementById('rec-email').value=t.recipientEmail||'';
+      document.getElementById('rec-subject').value=t.subject||'';
+      document.getElementById('rec-interval').value=t.interval;
+      document.getElementById('rec-dow').value=String(t.dayOfWeek);
+      document.getElementById('rec-dom').value=String(t.dayOfMonth||1);
+      document.getElementById('rec-active').value=t.active?'1':'0';
+      document.getElementById('rec-modal-title').textContent='✏️ Редактировать задачу';
+      if(!t.builtIn)document.getElementById('rec-delete-btn').style.display='';
+      toggleRecDayFields();
+      (t.templates||[]).forEach(txt=>addRecTplField(txt));
+    }
+  }
+  if(!recTplCount)addRecTplField('');
+  openModal('recurring-modal');
+}
+
+function saveRecurring(){
+  const name=document.getElementById('rec-name').value.trim();
+  const email=document.getElementById('rec-email').value.trim();
+  if(!name){toast('⚠️ Введите название');return}
+  if(!email){toast('⚠️ Введите email');return}
+  const templates=[...document.querySelectorAll('#rec-templates-list textarea')].map(t=>t.value.trim()).filter(Boolean);
+  if(!templates.length){toast('⚠️ Добавьте хотя бы один вариант текста');return}
+
+  const id=document.getElementById('rec-id').value||gid();
+  const all=getRecurring(),ex=all.find(t=>t.id===id);
+  const task={
+    id,name,
+    recipientName:document.getElementById('rec-recipient').value.trim(),
+    recipientEmail:email,
+    subject:document.getElementById('rec-subject').value.trim(),
+    templates,
+    interval:document.getElementById('rec-interval').value,
+    dayOfWeek:parseInt(document.getElementById('rec-dow').value),
+    dayOfMonth:parseInt(document.getElementById('rec-dom').value)||1,
+    lastSent:ex?ex.lastSent:null,
+    lastTemplateIdx:ex?ex.lastTemplateIdx:-1,
+    active:document.getElementById('rec-active').value==='1',
+    createdAt:ex?ex.createdAt:new Date().toISOString(),
+    builtIn:false
+  };
+  const idx=all.findIndex(t=>t.id===id);
+  if(idx>=0)all[idx]=task;else all.push(task);
+  sv(SK.recurring,all);
+  closeModal('recurring-modal');renderRecurring();toast('✅ Задача сохранена');
+}
+
+function deleteRecurring(){
+  const id=document.getElementById('rec-id').value;
+  if(!id||!confirm('Удалить задачу?'))return;
+  sv(SK.recurring,getRecurring().filter(t=>t.id!==id));
+  closeModal('recurring-modal');renderRecurring();toast('🗑️ Удалено');
+}
+
+function sendRecurring(id){
+  const all=getRecurring(),task=all.find(t=>t.id===id);
+  if(!task)return;
+  const sender=ld(SK.sender,'')||'';
+  const nextIdx=(task.lastTemplateIdx+1)%task.templates.length;
+  const body=task.templates[nextIdx].replace(/\{sender\}/g,sender);
+  const subject=task.subject.replace(/\{sender\}/g,sender);
+  const mailto='mailto:'+encodeURIComponent(task.recipientEmail)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  window.open(mailto,'_blank');
+
+  if(confirm('Письмо отправлено?')){
+    task.lastSent=new Date().toISOString();
+    task.lastTemplateIdx=nextIdx;
+    const idx=all.findIndex(t=>t.id===id);
+    all[idx]=task;
+    sv(SK.recurring,all);
+    addLog('manual',task.name,'email','→ '+task.recipientEmail+': '+body.substring(0,100));
+    toast('✅ Отмечено как отправленное (вариант '+(nextIdx+1)+'/'+task.templates.length+')');
+    if(curView==='recurring')renderRecurring();
+    if(curView==='dashboard')renderDashboard();
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   LOG
+   ═══════════════════════════════════════════════ */
+function renderLog(){
+  const log=getLog(),el=document.getElementById('log-list');
+  if(!log.length){el.innerHTML='<div class="empty-state"><span class="big-emoji">📜</span><p>Журнал пуст</p></div>';return}
+  el.innerHTML=log.map(l=>{
+    const d=new Date(l.time);
+    const ts=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    const ic=l.type==='auto'?'🤖':'✋';
+    return '<div class="log-entry '+l.type+'">'+
+      '<span class="log-icon">'+ic+'</span>'+
+      '<span class="log-time">'+ts+'</span>'+
+      '<span class="log-text"><b>'+escH(l.name)+'</b> → '+escH(l.channel)+'<br><span style="color:var(--text-secondary)">'+escH(l.text)+'</span></span>'+
+    '</div>';
+  }).join('');
+}
+
+function clearLog(){if(!confirm('Очистить журнал?'))return;sv(SK.log,[]);renderLog();toast('🗑️ Очищено')}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════════════ */
+function renderDashboard(){
+  const today=todayMMDD(),contacts=getContacts(),holidays=getHolidays(),sent=getSent(),sk=todayKey();
+  const bdayPeople=contacts.filter(c=>c.birthday&&fmtMMDD(c.birthday)===today);
+  const todayHols=holidays.filter(h=>h.date===today);
+  const holPeople=[];
+  todayHols.forEach(h=>{
+    const tgts=(!h.categoryIds||!h.categoryIds.length)?contacts:
+      contacts.filter(c=>(c.categoryIds||[]).some(cid=>h.categoryIds.includes(cid)));
+    tgts.forEach(c=>{
+      if(!holPeople.find(x=>x.contact.id===c.id&&x.holiday.id===h.id))
+        holPeople.push({contact:c,holiday:h});
+    });
+  });
+
+  let html='';
+  if(!bdayPeople.length&&!todayHols.length){
+    html+='<div class="today-banner"><span class="big-emoji">😊</span><h2>Сегодня нет событий</h2><p>'+fmtRuFull(today)+'</p></div>';
+  } else {
+    if(todayHols.length)
+      html+='<div class="today-banner"><span class="big-emoji">🎊</span><h2>'+todayHols.map(h=>escH(h.name)).join(', ')+'</h2><p>'+fmtRuFull(today)+'</p></div>';
+
+    const autoAll=[...bdayPeople.filter(c=>c.sendMode==='auto'),...holPeople.filter(x=>x.contact.sendMode==='auto').map(x=>x.contact)];
+    const uniqAuto=[...new Map(autoAll.map(c=>[c.id,c])).values()];
+    if(uniqAuto.length){
+      const tok=ld(SK.tgToken,'');
+      html+='<div class="card" style="border-color:var(--green);background:var(--green-bg)">'+
+        '<div class="card-title">🤖 Авто-режим: '+uniqAuto.length+' контакт(ов)</div>'+
+        '<p style="font-size:.85rem;margin-top:4px;color:var(--green)">'+(tok?'Telegram Bot настроен ✅':'⚠️ Настройте Telegram Bot в настройках')+'</p>'+
+        (tok?'<button class="btn btn-primary btn-sm" style="margin-top:8px;background:var(--green)" onclick="runAutoSend()">🚀 Отправить авто-поздравления</button>':'')+
+      '</div>';
+    }
+
+    if(bdayPeople.length){
+      html+='<div class="section-title">🎂 День рождения</div>';
+      bdayPeople.forEach(c=>{
+        const is=sent[sk]&&sent[sk]['bday_'+c.id];
+        const age=c.birthday?calcAge(c.birthday):0;
+        const sub='День рождения'+(age?' · '+age+' лет':'');
+        html+=mkRow(c,'birthday',is,sub,'bday_'+c.id,'');
+      });
+    }
+    if(holPeople.length){
+      html+='<div class="section-title">🎉 Праздники</div>';
+      holPeople.forEach(({contact:c,holiday:h})=>{
+        const is=sent[sk]&&sent[sk]['hol_'+h.id+'_'+c.id];
+        html+=mkRow(c,h.type==='professional'?'professional':'national',is,h.name,'hol_'+h.id+'_'+c.id,h.name);
+      });
+    }
+  }
+  document.getElementById('today-section').innerHTML=html;
+
+  // Recurring tasks due today
+  renderDashboardRecurring();
+  renderUpcoming();
+}
+
+function renderDashboardRecurring(){
+  const tasks=getRecurring().filter(t=>t.active&&isDue(t));
+  const el=document.getElementById('recurring-due-section');
+  if(!tasks.length){el.innerHTML='';return}
+  let html='<div class="section-title">🔄 Задачи на сегодня</div>';
+  tasks.forEach(t=>{
+    html+='<div class="greet-person">'+
+      '<div class="person-info"><div class="avatar">📧</div><div><div class="person-name">'+escH(t.name)+'</div><div class="person-detail">'+escH(t.recipientName||t.recipientEmail)+' · '+intervalLabel(t)+'</div></div></div>'+
+      '<button class="btn-greet" onclick="sendRecurring(\''+t.id+'\')">📧 Отправить</button>'+
+    '</div>';
+  });
+  el.innerHTML=html;
+}
+
+function mkRow(contact,eventType,isSent,subtitle,sentId,holName){
+  const init=contact.name.charAt(0).toUpperCase();
+  const sc=isSent?'sent':'',st=isSent?'✅ Отправлено':'🎉 Поздравить';
+  const mode=contact.sendMode==='auto'?'<span class="mode-badge auto">🤖</span>':'';
+  const data=encodeURIComponent(JSON.stringify({contactId:contact.id,eventType,sentId,holName:holName||''}));
+  return '<div class="greet-person">'+
+    '<div class="person-info"><div class="avatar">'+init+'</div><div><div class="person-name">'+escH(contact.name)+' '+mode+'</div><div class="person-detail">'+escH(subtitle)+'</div></div></div>'+
+    '<button class="btn-greet '+sc+'" onclick="openGreetModal(\''+data+'\')">'+st+'</button>'+
+  '</div>';
+}
+
+function renderUpcoming(){
+  const contacts=getContacts(),holidays=getHolidays(),ev=[];
+  contacts.forEach(c=>{if(!c.birthday)return;const mm=fmtMMDD(c.birthday),d=daysUntil(mm);if(d>0&&d<=7)ev.push({date:mm,days:d,text:'🎂 '+c.name+' — ДР'})});
+  holidays.forEach(h=>{const d=daysUntil(h.date);if(d>0&&d<=7)ev.push({date:h.date,days:d,text:(h.type==='professional'?'💼':'🎊')+' '+h.name})});
+  ev.sort((a,b)=>a.days-b.days);
+  const el=document.getElementById('upcoming-section');
+  if(!ev.length){el.innerHTML='<div class="empty-state"><span class="big-emoji">📭</span><p>Нет событий в ближайшие 7 дней</p></div>';return}
+  const dw=n=>n===1?'завтра':n<5?'через '+n+' дня':'через '+n+' дней';
+  el.innerHTML=ev.map(e=>'<div class="upcoming-item"><div class="date-badge">'+fmtRu(e.date)+'<br><small style="font-weight:400;color:var(--text-secondary)">'+dw(e.days)+'</small></div><div class="event-text">'+escH(e.text)+'</div></div>').join('');
+}
+
+/* ═══════════════════════════════════════════════
+   GREETING MODAL
+   ═══════════════════════════════════════════════ */
+let grSt={};
+
+function openGreetModal(enc){
+  const data=JSON.parse(decodeURIComponent(enc));
+  const contact=getContacts().find(c=>c.id===data.contactId);
+  if(!contact)return;
+  grSt={...data,contact};
+  const init=contact.name.charAt(0).toUpperCase();
+  const soc=[contact.phone&&'📱'+contact.phone,contact.telegram&&'✈️'+contact.telegram,contact.email&&'📧'+contact.email].filter(Boolean).join(' · ');
+  document.getElementById('greet-person-info').innerHTML='<div class="greet-person" style="margin:0"><div class="person-info"><div class="avatar">'+init+'</div><div><div class="person-name">'+escH(contact.name)+'</div><div class="person-detail">'+escH(soc)+'</div></div></div></div>';
+
+  const tpls=getTpls(),cCats=contact.categoryIds||[];
+  const matched=tpls.filter(t=>t.eventType===data.eventType).sort((a,b)=>{
+    const as=a.categoryId&&cCats.includes(a.categoryId)?2:(a.categoryId===null?1:0);
+    const bs=b.categoryId&&cCats.includes(b.categoryId)?2:(b.categoryId===null?1:0);
+    return bs-as;
+  });
+  grSt.tpls=matched.length?matched:tpls.slice(0,3);
+  const sel=document.getElementById('greet-tpl-select');
+  sel.innerHTML=grSt.tpls.map((t,i)=>{
+    const cat=t.categoryId?catById(t.categoryId):null;
+    const lb=cat?cat.icon+' '+cat.name:'📣 Общий';
+    return '<option value="'+i+'">'+lb+': '+t.text.substring(0,40)+'…</option>';
+  }).join('');
+  if(!grSt.tpls.length){sel.innerHTML='<option>Нет шаблонов</option>';document.getElementById('greet-text').value=contact.name+', поздравляю! 🎉'}
+  else{sel.value='0';applyGreetTpl()}
+  renderShareBtns();
+  openModal('greeting-modal');
+}
+
+function resolveTpl(tpl,contact,holName){
+  const sender=ld(SK.sender,'')||'';
+  const age=contact.birthday?calcAge(contact.birthday):0;
+  return tpl.replace(/\{name\}/g,contact.name).replace(/\{sender\}/g,sender).replace(/\{age\}/g,age?String(age):'').replace(/\{holiday\}/g,holName||'');
+}
+
+function applyGreetTpl(){
+  const idx=parseInt(document.getElementById('greet-tpl-select').value)||0;
+  const t=grSt.tpls[idx];
+  if(t)document.getElementById('greet-text').value=resolveTpl(t.text,grSt.contact,grSt.holName);
+}
+
+function shuffleTpl(){
+  const sel=document.getElementById('greet-tpl-select'),n=sel.options.length;
+  if(n<=1)return;sel.value=(parseInt(sel.value)+1)%n;applyGreetTpl();
+}
+
+function renderShareBtns(){
+  const c=grSt.contact;let html='';
+  const tok=ld(SK.tgToken,'');
+  if(tok&&c.tgChatId) html+='<button class="share-btn tg-bot" onclick="sendTgBot()">🤖 TG Bot (авто)</button>';
+  if(c.whatsapp||c.phone){const n=(c.whatsapp||c.phone).replace(/[^+\d]/g,'');html+='<button class="share-btn whatsapp" onclick="shareUrl(\'https://wa.me/'+n+'?text=\'+encTxt())">📱 WhatsApp</button>'}
+  if(c.telegram){const u=c.telegram.replace('@','');html+='<button class="share-btn telegram" onclick="shareUrl(\'https://t.me/'+encodeURIComponent(u)+'?text=\'+encTxt())">✈️ Telegram</button>'}
+  if(c.viber){const n=c.viber.replace(/[^+\d]/g,'');html+='<button class="share-btn viber" onclick="shareUrl(\'viber://chat?number='+n+'&text=\'+encTxt())">🟣 Viber</button>'}
+  if(c.email) html+='<button class="share-btn email" onclick="shareUrl(\'mailto:'+encodeURIComponent(c.email)+'?subject=\'+encodeURIComponent(\'Поздравление! 🎉\')+\'&body=\'+encTxt())">📧 Email</button>';
+  if(c.phone){const n=c.phone.replace(/[^+\d]/g,'');html+='<button class="share-btn sms" onclick="shareUrl(\'sms:'+n+'?body=\'+encTxt())">💬 SMS</button>'}
+  if(c.vk) html+='<button class="share-btn vk" onclick="shareUrl(\'https://vk.com/'+encodeURIComponent(c.vk)+'\')">🔵 VK</button>';
+  if(c.ok) html+='<button class="share-btn ok" onclick="shareUrl(\'https://ok.ru/profile/'+encodeURIComponent(c.ok)+'\')">🟠 ОК</button>';
+  if(c.facebook) html+='<button class="share-btn fb" onclick="shareUrl(\'https://m.me/'+encodeURIComponent(c.facebook)+'\')">🔵 FB</button>';
+  if(c.instagram){const u=c.instagram.replace('@','');html+='<button class="share-btn insta" onclick="shareUrl(\'https://ig.me/m/'+encodeURIComponent(u)+'\')">📸 Insta</button>'}
+  if(c.discord) html+='<button class="share-btn discord" onclick="copyGreet(\'Discord: скопировано\')">🟪 Discord</button>';
+  html+='<button class="share-btn copy" onclick="copyGreet()">📋 Копировать</button>';
+  document.getElementById('share-buttons').innerHTML=html;
+}
+
+function encTxt(){return encodeURIComponent(document.getElementById('greet-text').value)}
+function shareUrl(url){window.open(url,'_blank');markSent('manual','deep-link')}
+function copyGreet(msg){
+  navigator.clipboard.writeText(document.getElementById('greet-text').value).then(()=>{
+    toast(msg||'📋 Скопировано!');markSent('manual','copy');
+  });
+}
+
+function markSent(type,channel){
+  const sent=getSent(),k=todayKey();
+  if(!sent[k])sent[k]={};
+  sent[k][grSt.sentId]=true;
+  sv(SK.sent,sent);
+  addLog(type,grSt.contact.name,channel,document.getElementById('greet-text').value);
+  if(curView==='dashboard')renderDashboard();
+}
+
+/* ═══════════════════════════════════════════════
+   TELEGRAM BOT API (free, unlimited)
+   ═══════════════════════════════════════════════ */
+async function sendTgBot(){
+  const token=ld(SK.tgToken,''),chatId=grSt.contact.tgChatId;
+  if(!token||!chatId){toast('⚠️ Нет токена или chat_id');return}
+  const text=document.getElementById('greet-text').value;
+  try{
+    const r=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:chatId,text})
+    });
+    const d=await r.json();
+    if(d.ok){toast('✅ Отправлено через TG Bot!');markSent('auto','telegram-bot')}
+    else toast('❌ '+(d.description||'ошибка'));
+  }catch(e){toast('❌ '+e.message)}
+}
+
+/* ═══════════════════════════════════════════════
+   AUTO-SEND ENGINE
+   ═══════════════════════════════════════════════ */
+async function runAutoSend(){
+  const token=ld(SK.tgToken,'');
+  if(!token){toast('⚠️ Настройте Telegram Bot');return}
+  const today=todayMMDD(),contacts=getContacts(),holidays=getHolidays(),sent=getSent(),sk=todayKey();
+  if(!sent[sk])sent[sk]={};
+  let count=0,errors=0;
+
+  for(const c of contacts){
+    if(c.sendMode!=='auto'||!c.tgChatId||!c.birthday)continue;
+    if(fmtMMDD(c.birthday)!==today)continue;
+    const key='bday_'+c.id;
+    if(sent[sk][key])continue;
+    const text=pickTpl('birthday',c,'');
+    if(!text)continue;
+    try{
+      const r=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:c.tgChatId,text})});
+      const d=await r.json();
+      if(d.ok){sent[sk][key]=true;addLog('auto',c.name,'telegram-bot',text);count++}
+      else errors++;
+    }catch{errors++}
+  }
+
+  for(const h of holidays){
+    if(h.date!==today)continue;
+    const tgts=(!h.categoryIds||!h.categoryIds.length)?contacts:
+      contacts.filter(c=>(c.categoryIds||[]).some(cid=>h.categoryIds.includes(cid)));
+    for(const c of tgts){
+      if(c.sendMode!=='auto'||!c.tgChatId)continue;
+      const key='hol_'+h.id+'_'+c.id;
+      if(sent[sk][key])continue;
+      const text=pickTpl(h.type==='professional'?'professional':'national',c,h.name);
+      if(!text)continue;
+      try{
+        const r=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:c.tgChatId,text})});
+        const d=await r.json();
+        if(d.ok){sent[sk][key]=true;addLog('auto',c.name,'telegram-bot',text);count++}
+        else errors++;
+      }catch{errors++}
+    }
+  }
+
+  sv(SK.sent,sent);renderDashboard();
+  toast(errors?'📤 Отправлено: '+count+', ошибок: '+errors:'✅ Авто: '+count+' сообщений');
+}
+
+function pickTpl(eventType,contact,holName){
+  const tpls=getTpls(),cCats=contact.categoryIds||[];
+  const m=tpls.filter(t=>t.eventType===eventType).sort((a,b)=>{
+    const as=a.categoryId&&cCats.includes(a.categoryId)?2:(a.categoryId===null?1:0);
+    const bs=b.categoryId&&cCats.includes(b.categoryId)?2:(b.categoryId===null?1:0);
+    return bs-as;
+  });
+  if(!m.length)return null;
+  return resolveTpl(m[Math.floor(Math.random()*Math.min(3,m.length))].text,contact,holName);
+}
+
+/* ═══════════════════════════════════════════════
+   DATA MANAGEMENT
+   ═══════════════════════════════════════════════ */
+function exportData(){
+  const data={contacts:getContacts(),categories:getCats(),holidays:getHolidays(),templates:getTpls(),
+    sent:getSent(),log:getLog(),recurring:getRecurring(),sender:ld(SK.sender,''),tgToken:ld(SK.tgToken,''),v:'2.1',at:new Date().toISOString()};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download='reminder_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(a.href);toast('📤 Экспортировано');
+}
+
+function importData(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=function(e){
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.contacts)sv(SK.contacts,d.contacts);
+      if(d.categories)sv(SK.categories,d.categories);
+      if(d.holidays)sv(SK.holidays,d.holidays);
+      if(d.templates)sv(SK.templates,d.templates);
+      if(d.sent)sv(SK.sent,d.sent);
+      if(d.log)sv(SK.log,d.log);
+      if(d.recurring)sv(SK.recurring,d.recurring);
+      if(d.sender)sv(SK.sender,d.sender);
+      if(d.tgToken)sv(SK.tgToken,d.tgToken);
+      toast('📥 Импортировано!');showView(curView);
+    }catch{toast('❌ Ошибка чтения')}
+  };
+  r.readAsText(file);ev.target.value='';
+}
+
+function requestNotif(){
+  if(!('Notification' in window)){toast('⚠️ Не поддерживается');return}
+  Notification.requestPermission().then(p=>toast(p==='granted'?'✅ Включены':'❌ Отклонены'));
+}
+
+function clearAll(){
+  if(!confirm('Удалить ВСЕ данные?'))return;
+  if(!confirm('Точно? Это необратимо!'))return;
+  Object.values(SK).forEach(k=>localStorage.removeItem(k));
+  seedIfNeeded();showView('dashboard');toast('🗑️ Очищено');
+}
+
+/* ═══════════════════════════════════════════════
+   NOTIFICATIONS
+   ═══════════════════════════════════════════════ */
+function checkNotif(){
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  const nk='rm_last_notif',today=todayMMDD(),tk=todayKey();
+  if(localStorage.getItem(nk)===tk)return;
+  const contacts=getContacts(),holidays=getHolidays(),msgs=[];
+  const bday=contacts.filter(c=>c.birthday&&fmtMMDD(c.birthday)===today);
+  const hols=holidays.filter(h=>h.date===today);
+  if(bday.length)msgs.push('🎂 ДР: '+bday.map(c=>c.name).join(', '));
+  if(hols.length)msgs.push('🎊 '+hols.map(h=>h.name).join(', '));
+  const dueTasks=getRecurring().filter(t=>t.active&&isDue(t));
+  if(dueTasks.length)msgs.push('🔄 Задачи: '+dueTasks.map(t=>t.name).join(', '));
+  if(msgs.length){new Notification('🎉 Напоминалка',{body:msgs.join('\n')});localStorage.setItem(nk,tk)}
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  seedIfNeeded();loadTheme();renderDashboard();
+  checkNotif();setInterval(checkNotif,30*60*1000);
+});
+</script>
+</body>
+</html>
