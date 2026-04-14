@@ -204,6 +204,31 @@ textarea{resize:vertical;min-height:80px}
 .tpl-variant textarea{width:100%;min-height:60px}
 .tpl-variant .remove-tpl{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:var(--red-bg);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;border:none}
 
+/* ═══════════ BOARDS (KANBAN) ═══════════ */
+.board-selector{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.board-selector .board-chip{padding:8px 16px;border-radius:20px;font-size:.85rem;font-weight:600;background:var(--surface2);color:var(--text-secondary);cursor:pointer;border:2px solid transparent;transition:all .2s}
+.board-selector .board-chip:hover{background:var(--accent-bg);color:var(--accent)}
+.board-selector .board-chip.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;min-height:300px;-webkit-overflow-scrolling:touch}
+.kanban-col{min-width:240px;max-width:300px;flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;max-height:70vh}
+.kanban-col-header{padding:12px 14px;font-weight:700;font-size:.9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.kanban-col-header .col-count{font-size:.75rem;font-weight:400;color:var(--text-secondary)}
+.kanban-col-body{padding:8px;flex:1;overflow-y:auto;min-height:60px}
+.kanban-col-body.drag-over{background:var(--accent-bg);border-radius:0 0 var(--radius) var(--radius)}
+.kanban-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;cursor:grab;transition:transform .15s,box-shadow .15s;font-size:.85rem}
+.kanban-card:active{cursor:grabbing}
+.kanban-card.dragging{opacity:.5;transform:scale(.95)}
+.kanban-card:hover{box-shadow:var(--shadow)}
+.kanban-card .task-title{font-weight:600;margin-bottom:4px}
+.kanban-card .task-desc{color:var(--text-secondary);font-size:.8rem;max-height:40px;overflow:hidden}
+.kanban-card .task-meta{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:.75rem;color:var(--text-secondary)}
+.kanban-card .task-priority{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kanban-card .task-priority.high{background:var(--red)}
+.kanban-card .task-priority.medium{background:var(--yellow)}
+.kanban-card .task-priority.low{background:var(--green)}
+.add-task-btn{width:100%;padding:8px;border-radius:var(--radius-sm);background:none;color:var(--text-secondary);font-size:.8rem;border:1px dashed var(--border);margin-top:4px;transition:all .2s;flex-shrink:0;margin:8px}
+.add-task-btn:hover{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+
 /* ═══════════ TOAST ═══════════ */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:var(--radius);font-size:.9rem;font-weight:600;box-shadow:var(--shadow-lg);z-index:1000;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
@@ -214,6 +239,8 @@ textarea{resize:vertical;min-height:80px}
   .modal{padding:16px}
   .main{padding:12px}
   .share-btn{flex:1;justify-content:center;min-width:calc(50% - 4px)}
+  .kanban{flex-direction:column}
+  .kanban-col{min-width:100%;max-width:100%;max-height:none}
 }
 </style>
 </head>
@@ -238,6 +265,7 @@ textarea{resize:vertical;min-height:80px}
   <button class="nav-tab" onclick="showView('holidays')"><span class="tab-icon">🎊</span>Праздники</button>
   <button class="nav-tab" onclick="showView('templates')"><span class="tab-icon">✉️</span>Шаблоны</button>
   <button class="nav-tab" onclick="showView('recurring')"><span class="tab-icon">🔄</span>Задачи</button>
+  <button class="nav-tab" onclick="showView('boards')"><span class="tab-icon">📌</span>Борды</button>
   <button class="nav-tab" onclick="showView('log')"><span class="tab-icon">📜</span>Журнал</button>
   <button class="nav-tab" onclick="showView('settings')"><span class="tab-icon">⚙️</span>Настройки</button>
 </nav>
@@ -248,6 +276,7 @@ textarea{resize:vertical;min-height:80px}
   <div id="view-dashboard" class="view active">
     <div id="today-section"></div>
     <div id="recurring-due-section"></div>
+    <div id="boards-due-section"></div>
     <div class="section-title">📅 Ближайшие 7 дней</div>
     <div id="upcoming-section"></div>
   </div>
@@ -298,6 +327,19 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px">Регулярные email-запросы с ротацией текстов. Плейсхолдер <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">{sender}</code> — ваше имя из настроек.</p>
     <div id="recurring-list"></div>
+  </div>
+
+  <!-- ══ BOARDS ══ -->
+  <div id="view-boards" class="view">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="section-title" style="margin:0">📌 Борды</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="openBoardModal()" title="Настройки борды">⚙️</button>
+        <button class="btn btn-primary btn-sm" onclick="openBoardModal()">+ Новая борда</button>
+      </div>
+    </div>
+    <div id="board-selector" class="board-selector"></div>
+    <div id="kanban-container"></div>
   </div>
 
   <!-- ══ LOG ══ -->
@@ -354,7 +396,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
     <div class="card" style="margin-top:12px;text-align:center;color:var(--text-secondary)">
-      <p>Напоминалка v2.1 — 100% бесплатно</p>
+      <p>Напоминалка v2.2 — 100% бесплатно</p>
       <p style="font-size:.78rem;margin-top:4px">Данные в localStorage · Telegram Bot API бесплатный и безлимитный</p>
     </div>
   </div>
@@ -550,6 +592,52 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- ═══════════ BOARD MODAL ═══════════ -->
+<div class="modal-overlay" id="board-modal" onclick="if(event.target===this)closeModal('board-modal')">
+  <div class="modal">
+    <div class="modal-title" id="board-modal-title">📌 Новая борда</div>
+    <input type="hidden" id="brd-id">
+    <div class="form-group"><label>Название *</label><input type="text" id="brd-name" placeholder="Дом / Работа / Проект..."></div>
+    <div class="form-group"><label>Иконка</label><input type="text" id="brd-icon" placeholder="🏠" maxlength="4"></div>
+    <div class="form-group">
+      <label>Колонки (через запятую)</label>
+      <input type="text" id="brd-columns" placeholder="Сделать, В работе, Готово">
+      <div style="font-size:.75rem;color:var(--text-secondary);margin-top:4px">По умолчанию: Сделать, В работе, Готово</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveBoard()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('board-modal')">Отмена</button>
+      <button class="btn btn-danger" id="brd-delete-btn" style="display:none;margin-left:auto" onclick="deleteBoard()">🗑️ Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ BOARD TASK MODAL ═══════════ -->
+<div class="modal-overlay" id="btask-modal" onclick="if(event.target===this)closeModal('btask-modal')">
+  <div class="modal">
+    <div class="modal-title" id="btask-modal-title">✏️ Задача</div>
+    <input type="hidden" id="bt-id">
+    <input type="hidden" id="bt-col">
+    <div class="form-group"><label>Название *</label><input type="text" id="bt-title" placeholder="Почистить гараж"></div>
+    <div class="form-group"><label>Описание</label><textarea id="bt-desc" rows="3" placeholder="Подробности..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Приоритет</label>
+        <select id="bt-priority">
+          <option value="low">🟢 Низкий</option>
+          <option value="medium" selected>🟡 Средний</option>
+          <option value="high">🔴 Высокий</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Дедлайн</label><input type="date" id="bt-deadline"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveBoardTask()">💾 Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('btask-modal')">Отмена</button>
+      <button class="btn btn-danger" id="bt-delete-btn" style="display:none;margin-left:auto" onclick="deleteBoardTask()">🗑️ Удалить</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -560,7 +648,8 @@ const SK = {
   contacts:'rm_contacts', categories:'rm_categories', holidays:'rm_holidays',
   templates:'rm_templates', sent:'rm_sent', theme:'rm_theme', seeded:'rm_seeded',
   tgToken:'rm_tg_token', sender:'rm_sender', log:'rm_log',
-  recurring:'rm_recurring'
+  recurring:'rm_recurring',
+  boards:'rm_boards'
 };
 
 function sv(k,d){localStorage.setItem(k,JSON.stringify(d))}
@@ -634,6 +723,7 @@ function seedIfNeeded(){
   }
   sv(SK.log,[]);
   sv(SK.recurring,DEF_RECURRING);
+  if(!ld(SK.boards,null))sv(SK.boards,[{id:'brd_home',name:'Дом',icon:'🏠',columns:['Сделать','В работе','Готово'],tasks:[]},{id:'brd_work',name:'Работа',icon:'💼',columns:['Бэклог','В работе','На проверке','Готово'],tasks:[]}]);
   sv(SK.seeded,true);
 }
 
@@ -647,6 +737,7 @@ function getTpls(){return ld(SK.templates,[])}
 function getSent(){return ld(SK.sent,{})}
 function getLog(){return ld(SK.log,[])}
 function getRecurring(){return ld(SK.recurring,[])}
+function getBoards(){return ld(SK.boards,[])}
 function catById(id){return getCats().find(c=>c.id===id)}
 
 function fmtMMDD(date){const d=new Date(date);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -691,7 +782,7 @@ function addLog(type,name,channel,text){
    VIEW SWITCHING
    ═══════════════════════════════════════════════ */
 let curView='dashboard';
-const VIEWS=['dashboard','contacts','categories','holidays','templates','recurring','log','settings'];
+const VIEWS=['dashboard','contacts','categories','holidays','templates','recurring','boards','log','settings'];
 
 function showView(id){
   curView=id;
@@ -699,7 +790,7 @@ function showView(id){
   document.getElementById('view-'+id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',VIEWS[i]===id));
   const r={dashboard:renderDashboard,contacts:renderContacts,categories:renderCategories,
-    holidays:renderHolidays,templates:renderTemplates,recurring:renderRecurring,log:renderLog,settings:loadSettings};
+    holidays:renderHolidays,templates:renderTemplates,recurring:renderRecurring,boards:renderBoards,log:renderLog,settings:loadSettings};
   if(r[id])r[id]();
 }
 
@@ -1200,6 +1291,159 @@ function renderLog(){
 function clearLog(){if(!confirm('Очистить журнал?'))return;sv(SK.log,[]);renderLog();toast('🗑️ Очищено')}
 
 /* ═══════════════════════════════════════════════
+   BOARDS (KANBAN)
+   ═══════════════════════════════════════════════ */
+let curBoardId=null;
+
+function renderBoards(){
+  const boards=getBoards();
+  const sel=document.getElementById('board-selector');
+  const con=document.getElementById('kanban-container');
+  if(!boards.length){
+    sel.innerHTML='';con.innerHTML='<div class="empty-state"><span class="big-emoji">📌</span><p>Нет бордов</p><p style="font-size:.85rem;margin-top:8px">Нажмите «+ Новая борда»</p></div>';return;
+  }
+  if(!curBoardId||!boards.find(b=>b.id===curBoardId))curBoardId=boards[0].id;
+  sel.innerHTML=boards.map(b=>'<span class="board-chip '+(b.id===curBoardId?'active':'')+'" onclick="curBoardId=\''+b.id+'\';renderBoards()">'+(b.icon||'📌')+' '+escH(b.name)+'</span>').join('')+
+    '<span class="board-chip" onclick="openBoardModal()" style="border:1px dashed var(--border)">+ Новая</span>';
+  const board=boards.find(b=>b.id===curBoardId);
+  if(!board){con.innerHTML='';return}
+  const cols=board.columns||['Сделать','В работе','Готово'];
+  const tasks=board.tasks||[];
+  con.innerHTML='<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px">'+
+    '<button class="btn btn-secondary btn-sm" onclick="openBoardModal(\''+board.id+'\')" title="Настройки борды">⚙️ '+escH(board.name)+'</button></div>'+
+    '<div class="kanban">'+cols.map(col=>{
+    const colTasks=tasks.filter(t=>t.column===col);
+    return '<div class="kanban-col" data-col="'+escH(col)+'">' +
+      '<div class="kanban-col-header"><span>'+escH(col)+'</span><span class="col-count">'+colTasks.length+'</span></div>'+
+      '<div class="kanban-col-body" ondragover="event.preventDefault();this.classList.add(\'drag-over\')" ondragleave="this.classList.remove(\'drag-over\')" ondrop="dropTask(event,\''+escH(col).replace(/'/g,"\\'")+'\')">'+
+      colTasks.map(t=>{
+        const dl=t.deadline?'<span>📅 '+new Date(t.deadline).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+'</span>':'';
+        return '<div class="kanban-card" draggable="true" ondragstart="dragTask(event,\''+t.id+'\')" onclick="openBoardTaskModal(\''+t.id+'\')">' +
+          '<div class="task-title">'+escH(t.title)+'</div>'+
+          (t.description?'<div class="task-desc">'+escH(t.description)+'</div>':'')+
+          '<div class="task-meta"><span class="task-priority '+t.priority+'"></span>'+dl+'</div>'+
+        '</div>';
+      }).join('')+
+      '</div>'+
+      '<button class="add-task-btn" onclick="openBoardTaskModal(null,\''+escH(col).replace(/'/g,"\\'")+'\')">+ Добавить</button>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+
+let dragTaskId=null;
+function dragTask(e,id){dragTaskId=id;e.dataTransfer.effectAllowed='move'}
+function dropTask(e,col){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  if(!dragTaskId)return;
+  const boards=getBoards(),b=boards.find(x=>x.id===curBoardId);
+  if(!b)return;
+  const t=b.tasks.find(x=>x.id===dragTaskId);
+  if(t){t.column=col;sv(SK.boards,boards);renderBoards()}
+  dragTaskId=null;
+}
+
+function openBoardModal(id){
+  document.getElementById('brd-id').value='';
+  document.getElementById('brd-name').value='';
+  document.getElementById('brd-icon').value='📌';
+  document.getElementById('brd-columns').value='';
+  document.getElementById('brd-delete-btn').style.display='none';
+  document.getElementById('board-modal-title').textContent='📌 Новая борда';
+  if(id){
+    const b=getBoards().find(x=>x.id===id);
+    if(b){
+      document.getElementById('brd-id').value=b.id;
+      document.getElementById('brd-name').value=b.name;
+      document.getElementById('brd-icon').value=b.icon||'📌';
+      document.getElementById('brd-columns').value=(b.columns||[]).join(', ');
+      document.getElementById('board-modal-title').textContent='✏️ Редактировать борду';
+      document.getElementById('brd-delete-btn').style.display='';
+    }
+  }
+  openModal('board-modal');
+}
+
+function saveBoard(){
+  const name=document.getElementById('brd-name').value.trim();
+  if(!name){toast('⚠️ Введите название');return}
+  const id=document.getElementById('brd-id').value||gid();
+  const colStr=document.getElementById('brd-columns').value.trim();
+  const columns=colStr?colStr.split(',').map(s=>s.trim()).filter(Boolean):['Сделать','В работе','Готово'];
+  const boards=getBoards(),ex=boards.find(b=>b.id===id);
+  const board={id,name,icon:document.getElementById('brd-icon').value||'📌',columns,tasks:ex?ex.tasks:[]};
+  // re-map tasks whose column was renamed/removed — move to first column
+  board.tasks.forEach(t=>{if(!columns.includes(t.column))t.column=columns[0]});
+  const idx=boards.findIndex(b=>b.id===id);
+  if(idx>=0)boards[idx]=board;else boards.push(board);
+  sv(SK.boards,boards);curBoardId=id;
+  closeModal('board-modal');renderBoards();toast('✅ Борда сохранена');
+}
+
+function deleteBoard(){
+  const id=document.getElementById('brd-id').value;
+  if(!id||!confirm('Удалить борду и все её задачи?'))return;
+  sv(SK.boards,getBoards().filter(b=>b.id!==id));
+  curBoardId=null;closeModal('board-modal');renderBoards();toast('🗑️ Удалено');
+}
+
+function openBoardTaskModal(taskId,col){
+  document.getElementById('bt-id').value='';
+  document.getElementById('bt-col').value=col||'';
+  document.getElementById('bt-title').value='';
+  document.getElementById('bt-desc').value='';
+  document.getElementById('bt-priority').value='medium';
+  document.getElementById('bt-deadline').value='';
+  document.getElementById('bt-delete-btn').style.display='none';
+  document.getElementById('btask-modal-title').textContent='✏️ Новая задача';
+  if(taskId){
+    const b=getBoards().find(x=>x.id===curBoardId);
+    if(!b)return;
+    const t=b.tasks.find(x=>x.id===taskId);
+    if(t){
+      document.getElementById('bt-id').value=t.id;
+      document.getElementById('bt-col').value=t.column;
+      document.getElementById('bt-title').value=t.title;
+      document.getElementById('bt-desc').value=t.description||'';
+      document.getElementById('bt-priority').value=t.priority||'medium';
+      document.getElementById('bt-deadline').value=t.deadline||'';
+      document.getElementById('bt-delete-btn').style.display='';
+      document.getElementById('btask-modal-title').textContent='✏️ Редактировать задачу';
+    }
+  }
+  openModal('btask-modal');
+}
+
+function saveBoardTask(){
+  const title=document.getElementById('bt-title').value.trim();
+  if(!title){toast('⚠️ Введите название');return}
+  const boards=getBoards(),b=boards.find(x=>x.id===curBoardId);
+  if(!b)return;
+  const id=document.getElementById('bt-id').value||gid();
+  const task={
+    id,title,
+    description:document.getElementById('bt-desc').value.trim(),
+    column:document.getElementById('bt-col').value||b.columns[0],
+    priority:document.getElementById('bt-priority').value,
+    deadline:document.getElementById('bt-deadline').value||null,
+    createdAt:new Date().toISOString()
+  };
+  const existing=b.tasks.find(t=>t.id===id);
+  if(existing)task.createdAt=existing.createdAt;
+  const idx=b.tasks.findIndex(t=>t.id===id);
+  if(idx>=0)b.tasks[idx]=task;else b.tasks.push(task);
+  sv(SK.boards,boards);
+  closeModal('btask-modal');renderBoards();toast('✅ Задача сохранена');
+}
+
+function deleteBoardTask(){
+  const id=document.getElementById('bt-id').value;
+  if(!id||!confirm('Удалить задачу?'))return;
+  const boards=getBoards(),b=boards.find(x=>x.id===curBoardId);
+  if(b){b.tasks=b.tasks.filter(t=>t.id!==id);sv(SK.boards,boards)}
+  closeModal('btask-modal');renderBoards();toast('🗑️ Удалено');
+}
+
+/* ═══════════════════════════════════════════════
    DASHBOARD
    ═══════════════════════════════════════════════ */
 function renderDashboard(){
@@ -1255,6 +1499,7 @@ function renderDashboard(){
 
   // Recurring tasks due today
   renderDashboardRecurring();
+  renderDashboardBoards();
   renderUpcoming();
 }
 
@@ -1267,6 +1512,34 @@ function renderDashboardRecurring(){
     html+='<div class="greet-person">'+
       '<div class="person-info"><div class="avatar">📧</div><div><div class="person-name">'+escH(t.name)+'</div><div class="person-detail">'+escH(t.recipientName||t.recipientEmail)+' · '+intervalLabel(t)+'</div></div></div>'+
       '<button class="btn-greet" onclick="sendRecurring(\''+t.id+'\')">📧 Отправить</button>'+
+    '</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderDashboardBoards(){
+  const boards=getBoards(),el=document.getElementById('boards-due-section');
+  const now=new Date(),soon=new Date(now);soon.setDate(soon.getDate()+3);
+  let items=[];
+  boards.forEach(b=>{
+    (b.tasks||[]).forEach(t=>{
+      if(!t.deadline)return;
+      const dl=new Date(t.deadline);
+      const lastCol=b.columns[b.columns.length-1];
+      if(t.column===lastCol)return;
+      if(dl<=soon)items.push({board:b,task:t,dl});
+    });
+  });
+  if(!items.length){el.innerHTML='';return}
+  items.sort((a,b)=>a.dl-b.dl);
+  let html='<div class="section-title">📌 Дела с дедлайном</div>';
+  items.forEach(({board:b,task:t,dl})=>{
+    const overdue=dl<new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const color=overdue?'var(--red)':'var(--yellow)';
+    const label=overdue?'⚠️ Просрочено':'📅 '+dl.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+    html+='<div class="greet-person">'+
+      '<div class="person-info"><div class="avatar" style="background:'+(overdue?'var(--red-bg)':'var(--yellow-bg)')+';color:'+color+'">'+( b.icon||'📌')+'</div><div><div class="person-name">'+escH(t.title)+'</div><div class="person-detail">'+escH(b.name)+' · '+escH(t.column)+' · '+label+'</div></div></div>'+
+      '<button class="btn-greet" onclick="curBoardId=\''+b.id+'\';showView(\'boards\')">Открыть</button>'+
     '</div>';
   });
   el.innerHTML=html;
@@ -1461,7 +1734,7 @@ function pickTpl(eventType,contact,holName){
    ═══════════════════════════════════════════════ */
 function exportData(){
   const data={contacts:getContacts(),categories:getCats(),holidays:getHolidays(),templates:getTpls(),
-    sent:getSent(),log:getLog(),recurring:getRecurring(),sender:ld(SK.sender,''),tgToken:ld(SK.tgToken,''),v:'2.1',at:new Date().toISOString()};
+    sent:getSent(),log:getLog(),recurring:getRecurring(),boards:getBoards(),sender:ld(SK.sender,''),tgToken:ld(SK.tgToken,''),v:'2.2',at:new Date().toISOString()};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   a.download='reminder_'+new Date().toISOString().slice(0,10)+'.json';a.click();
@@ -1481,6 +1754,7 @@ function importData(ev){
       if(d.sent)sv(SK.sent,d.sent);
       if(d.log)sv(SK.log,d.log);
       if(d.recurring)sv(SK.recurring,d.recurring);
+      if(d.boards)sv(SK.boards,d.boards);
       if(d.sender)sv(SK.sender,d.sender);
       if(d.tgToken)sv(SK.tgToken,d.tgToken);
       toast('📥 Импортировано!');showView(curView);
